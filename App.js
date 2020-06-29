@@ -1,44 +1,29 @@
-import React from "react";
+import React, { Component,useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import MapView from "react-native-maps";
+import db from "./Firebase";
+import MyPage from "./MyPage";
 
-const App = () => {
-  return (
-    <View style={styles.lap}>
-      <MapView
-        style={{ flex: 3, zIndex: 1 }}
-        initialRegion={{
-          latitude: 35.681236,
-          longitude: 139.767125,
-          latitudeDelta: 0.02, //小さくなるほどズーム
-          longitudeDelta: 0.02,
-        }}
-      >
-        <MapView.Marker
-          coordinate={{
-            latitude: 35.681236,
-            longitude: 139.767125,
-          }}
-          title={"東京駅"}
-          description={"駅"}
-          // onPress={() => alert("click")}
-        />
-      </MapView>
-    </View>
-  );
-};
+// const STATUS_BAR_HEIGHT = Platform.OS == "ios" ? 20 : statusbar.currentHeight;
 
-const styles = StyleSheet.create({
-  lap: {
-    backgroundColor: "rgba(0,0,0,0.6)",
-    flex: 99,
-    zIndex: 2,
-    position: "absolute",
-    left: 0,
-    right: 0,
-    bottom: 0,
-    top: 0,
-  },
-});
+export default App = () => {
+    const [data,setData] = useState(null);
+    const userRef = db.collection("users").doc("0PNr22ScFq5DG5SXQxYE");
 
-export default App;
+    
+        userRef.get()
+        .then(doc => {
+            // if (!doc.exists) {
+            //   console.log('No such document!');
+            // } else {
+            //   console.log('Document data:', doc.data());
+            // }
+            setData(doc.data());
+        })
+        .catch(err => {
+            console.log('Error getting document', err);
+        });
+
+    return (
+        <MyPage data={data}/>
+    );
+}
